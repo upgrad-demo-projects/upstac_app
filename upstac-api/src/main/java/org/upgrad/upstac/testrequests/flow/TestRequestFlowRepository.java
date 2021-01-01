@@ -11,15 +11,7 @@ public interface TestRequestFlowRepository extends JpaRepository<TestRequestFlow
 
 
     Optional<TestRequestFlow> findById(Long id);
-
-
-
     void deleteById(Long id);
-
-
-
-
-
     List<TestRequestFlow> findByRequest(TestRequest request);
 
 

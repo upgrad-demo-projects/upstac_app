@@ -50,7 +50,6 @@ public class TestRequestQueryService {
 
     public List<TestRequest> findBy(RequestStatus requestStatus) {
         return testRequestRepository.findByStatus(requestStatus);
-
     }
 
 
