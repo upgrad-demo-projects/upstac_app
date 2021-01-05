@@ -61,10 +61,7 @@ public class TestRequestUpdateService {
     }
 
     public TestRequest updateLabTest(Long id, @Valid CreateLabResult createLabResult, User tester) {
-
         TestRequest testRequest = testRequestRepository.findByRequestIdAndStatus(id, RequestStatus.LAB_TEST_IN_PROGRESS).orElseThrow(() -> new AppException("Invalid ID or State"));
-
-
         labResultService.updateLabTest(testRequest, createLabResult);
         testRequestFlowService.log(testRequest, RequestStatus.LAB_TEST_IN_PROGRESS, RequestStatus.LAB_TEST_COMPLETED, tester);
         return updateStatusAndSave(testRequest, RequestStatus.LAB_TEST_COMPLETED);
