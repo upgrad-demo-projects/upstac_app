@@ -21,7 +21,7 @@ class ConsultationControllerTest {
   public void
       calling_assignForConsultation_with_valid_test_request_id_should_update_the_request_status() {
 
-    // TestRequest testRequest = getTestRequestByStatus(RequestStatus.LAB_TEST_COMPLETED);
+     TestRequest testRequest = getTestRequestByStatus(RequestStatus.LAB_TEST_COMPLETED);
 
     // Implement this method
 
@@ -54,7 +54,7 @@ class ConsultationControllerTest {
   public void
       calling_updateConsultation_with_valid_test_request_id_should_update_the_request_status_and_update_consultation_details() {
 
-    // TestRequest testRequest = getTestRequestByStatus(RequestStatus.DIAGNOSIS_IN_PROCESS);
+     TestRequest testRequest = getTestRequestByStatus(RequestStatus.DIAGNOSIS_IN_PROCESS);
 
     // Implement this method
     // Create an object of CreateConsultationRequest and call getCreateConsultationRequest() to
@@ -77,7 +77,7 @@ class ConsultationControllerTest {
   @WithUserDetails(value = "doctor")
   public void calling_updateConsultation_with_invalid_test_request_id_should_throw_exception() {
 
-    // TestRequest testRequest = getTestRequestByStatus(RequestStatus.DIAGNOSIS_IN_PROCESS);
+     TestRequest testRequest = getTestRequestByStatus(RequestStatus.DIAGNOSIS_IN_PROCESS);
 
     // Implement this method
 
@@ -99,7 +99,7 @@ class ConsultationControllerTest {
   @WithUserDetails(value = "doctor")
   public void calling_updateConsultation_with_invalid_empty_status_should_throw_exception() {
 
-    // TestRequest testRequest = getTestRequestByStatus(RequestStatus.DIAGNOSIS_IN_PROCESS);
+     TestRequest testRequest = getTestRequestByStatus(RequestStatus.DIAGNOSIS_IN_PROCESS);
 
     // Implement this method
 

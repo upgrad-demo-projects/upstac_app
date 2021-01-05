@@ -19,7 +19,6 @@ import java.util.UUID;
 
 @SpringBootTest
 @Slf4j
-@ExtendWith(MockitoExtension.class)
 class LabRequestControllerTest {
 
   @Autowired LabRequestController labRequestController;
