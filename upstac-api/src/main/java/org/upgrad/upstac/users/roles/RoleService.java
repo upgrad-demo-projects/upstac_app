@@ -5,51 +5,43 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 public class RoleService {
 
+  @Autowired private RoleRepository roleRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+  public void saveRoleFor(UserRole userRole) {
+    Role role = new Role();
+    role.setName(userRole.name());
+    roleRepository.save(role);
+  }
 
+  public List<Role> findAll() {
+    return roleRepository.findAll();
+  }
 
-    public void saveRoleFor(UserRole userRole) {
-        Role role = new Role();
-        role.setName(userRole.name());
-        roleRepository.save(role);
-    }
+  public Role findByRole(UserRole userRole) {
 
+    return roleRepository.findByName(userRole.name());
+  }
 
-    public List<Role> findAll() {
-        return roleRepository.findAll();
-    }
+  public boolean shouldInitialize() {
+    return roleRepository.findAll().size() <= 0;
+  }
 
-    public Role findByRole(UserRole userRole) {
+  public Role getForUser() {
+    return findByRole(UserRole.USER);
+  }
 
-        return roleRepository.findByName(userRole.name());
-    }
+  public Role getForDoctor() {
+    return findByRole(UserRole.DOCTOR);
+  }
 
-    public boolean shouldInitialize() {
-        return roleRepository.findAll().size() <= 0;
-    }
+  public Role getForTester() {
+    return findByRole(UserRole.TESTER);
+  }
 
-    public Role getForUser() {
-        return findByRole(UserRole.USER);
-    }
-
-    public Role getForDoctor() {
-        return findByRole(UserRole.DOCTOR);
-    }
-
-    public Role getForTester() {
-        return findByRole(UserRole.TESTER);
-
-    }
-
-    public Role getForGovernmentAuthority() {
-        return findByRole(UserRole.GOVERNMENT_AUTHORITY);
-
-    }
-
+  public Role getForGovernmentAuthority() {
+    return findByRole(UserRole.GOVERNMENT_AUTHORITY);
+  }
 }
