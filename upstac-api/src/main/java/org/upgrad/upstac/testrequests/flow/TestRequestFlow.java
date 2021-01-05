@@ -19,23 +19,17 @@ public class TestRequestFlow {
     Long id;
 
 
-
     @ManyToOne
     @JsonIgnore
     private TestRequest request;
 
-    private RequestStatus fromStatus ;
-    private RequestStatus toStatus ;
+    private RequestStatus fromStatus;
+    private RequestStatus toStatus;
 
     @ManyToOne
     private User changedBy;
 
-    private LocalDate happenedOn=LocalDate.now();
-
-
-
-
-
+    private LocalDate happenedOn = LocalDate.now();
 
 
 }

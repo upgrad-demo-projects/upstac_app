@@ -3,12 +3,9 @@ package org.upgrad.upstac.testrequests;
 import lombok.Data;
 import org.upgrad.upstac.users.models.Gender;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 
 public class CreateTestRequest {
-
 
 
     private String name;
@@ -22,8 +19,6 @@ public class CreateTestRequest {
 
 
     private Integer pinCode;
-
-
 
 
 }

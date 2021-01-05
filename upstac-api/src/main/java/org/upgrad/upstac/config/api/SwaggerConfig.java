@@ -1,7 +1,6 @@
 package org.upgrad.upstac.config.api;
 
 import com.google.common.base.Predicate;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.upgrad.upstac.users.roles.UserRole;
@@ -60,7 +59,7 @@ public class SwaggerConfig {
         return Collections.singletonList(new SecurityReference("Authorization", authorizationScopes));
     }
 
-     String getScopeFor(UserRole role) {
+    String getScopeFor(UserRole role) {
         return role.name();
     }
 
@@ -84,11 +83,6 @@ public class SwaggerConfig {
 
         );
     }
-
-    
-
-
-
 
 
     private ApiInfo apiInfo() {

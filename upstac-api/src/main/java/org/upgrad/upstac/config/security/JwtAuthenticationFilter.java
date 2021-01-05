@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             username = getUserNameFromToken(authToken);
         }
 
-        if (isSecurityContextAuthenticationNotPresent(username)){
+        if (isSecurityContextAuthenticationNotPresent(username)) {
             log.info("security context se");
             setSecurityContextAuthenticationIn(req, username, authToken);
         }

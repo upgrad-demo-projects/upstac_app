@@ -21,9 +21,10 @@ import javax.validation.Valid;
 public class ChangePasswordService {
 
 
+    private static final Logger log = LoggerFactory.getLogger(ChangePasswordService.class);
     private AuthenticationManager authenticationManager;
-
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserRepository userRepository;
 
 
     @Autowired
@@ -32,11 +33,6 @@ public class ChangePasswordService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
     }
-
-    private UserRepository userRepository;
-
-
-    private static final Logger log = LoggerFactory.getLogger(ChangePasswordService.class);
 
     public void changePassword(User user, @Valid ChangePasswordRequest changePasswordRequest) {
 

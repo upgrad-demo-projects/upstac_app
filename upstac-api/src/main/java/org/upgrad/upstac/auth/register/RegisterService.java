@@ -18,24 +18,21 @@ import static org.upgrad.upstac.shared.DateParser.getDateFromString;
 @Service
 public class RegisterService {
 
+    private static final Logger log = LoggerFactory.getLogger(RegisterService.class);
     @Autowired
     private UserService userService;
-
-
-    private static final Logger log = LoggerFactory.getLogger(RegisterService.class);
-
 
     public User addUser(RegisterRequest user) {
 
 
-        if((null != userService.findByUserName(user.getUserName())))
+        if ((null != userService.findByUserName(user.getUserName())))
             throw new AppException("Username already exists " + user.getUserName());
 
-        if((null != userService.findByEmail(user.getEmail())))
+        if ((null != userService.findByEmail(user.getEmail())))
             throw new AppException("User with Same email already exists " + user.getEmail());
 
 
-        if((null != userService.findByPhoneNumber(user.getPhoneNumber())))
+        if ((null != userService.findByPhoneNumber(user.getPhoneNumber())))
             throw new AppException("User with Same Phone number already exists " + user.getPhoneNumber());
 
 
@@ -65,14 +62,14 @@ public class RegisterService {
 
     public User addDoctor(RegisterRequest user) {
 
-        if((null != userService.findByUserName(user.getUserName())))
+        if ((null != userService.findByUserName(user.getUserName())))
             throw new AppException("Username already exists " + user.getUserName());
 
-        if((null != userService.findByEmail(user.getEmail())))
+        if ((null != userService.findByEmail(user.getEmail())))
             throw new AppException("User with Same email already exists " + user.getEmail());
 
 
-        if((null != userService.findByPhoneNumber(user.getPhoneNumber())))
+        if ((null != userService.findByPhoneNumber(user.getPhoneNumber())))
             throw new AppException("User with Same Phone number already exists " + user.getPhoneNumber());
 
 
@@ -99,16 +96,17 @@ public class RegisterService {
 
 
     }
+
     public User addGovernmentAuthority(RegisterRequest user) {
 
-        if((null != userService.findByUserName(user.getUserName())))
+        if ((null != userService.findByUserName(user.getUserName())))
             throw new AppException("Username already exists " + user.getUserName());
 
-        if((null != userService.findByEmail(user.getEmail())))
+        if ((null != userService.findByEmail(user.getEmail())))
             throw new AppException("User with Same email already exists " + user.getEmail());
 
 
-        if((null != userService.findByPhoneNumber(user.getPhoneNumber())))
+        if ((null != userService.findByPhoneNumber(user.getPhoneNumber())))
             throw new AppException("User with Same Phone number already exists " + user.getPhoneNumber());
 
 
@@ -138,14 +136,14 @@ public class RegisterService {
 
     public User addTester(RegisterRequest user) {
 
-        if((null != userService.findByUserName(user.getUserName())))
+        if ((null != userService.findByUserName(user.getUserName())))
             throw new AppException("Username already exists " + user.getUserName());
 
-        if((null != userService.findByEmail(user.getEmail())))
+        if ((null != userService.findByEmail(user.getEmail())))
             throw new AppException("User with Same email already exists " + user.getEmail());
 
 
-        if((null != userService.findByPhoneNumber(user.getPhoneNumber())))
+        if ((null != userService.findByPhoneNumber(user.getPhoneNumber())))
             throw new AppException("User with Same Phone number already exists " + user.getPhoneNumber());
 
 

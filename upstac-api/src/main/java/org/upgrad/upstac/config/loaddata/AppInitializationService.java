@@ -23,67 +23,17 @@ import static org.upgrad.upstac.shared.DateParser.getStringFromDate;
 public class AppInitializationService implements ApplicationListener<ApplicationReadyEvent> {
 
 
+    private static final Logger log = LoggerFactory.getLogger(AppInitializationService.class);
+    static List<String> generatedPhones = new ArrayList<>();
     @Autowired
     RoleService roleService;
-
     @Autowired
     UserService userService;
-
-
     User defaultDoctor = null;
     User defaultTester = null;
     User govtAuthority = null;
-    static List<String> generatedPhones = new ArrayList<>();
 
-    private static final Logger log = LoggerFactory.getLogger(AppInitializationService.class);
-
-
-
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
-
-
-        if ( roleService.shouldInitialize()) {
-            log.info("loading default values");
-            initialize();
-
-            log.info("loaded default values");
-        }
-
-
-    }
-
-
-
-    public void initialize() {
-
-        roleService.saveRoleFor(UserRole.USER);
-        roleService.saveRoleFor(UserRole.TESTER);
-        roleService.saveRoleFor(UserRole.DOCTOR);
-        roleService.saveRoleFor(UserRole.GOVERNMENT_AUTHORITY);
-        addDefaultUserData();
-
-    }
-
-
-    public void addDefaultUserData() {
-
-        createUserFrom("user", getRandomPinCode());
-
-
-        defaultDoctor = userService.addDoctor(createRegisterRequestWith("doctor", getRandomPinCode()));
-
-
-        defaultTester = userService.addTester(createRegisterRequestWith("tester", getRandomPinCode()));
-
-        govtAuthority = userService.addGovernmentAuthority(createRegisterRequestWith("authority", getRandomPinCode()));
-
-    }
-
-    public User createUserFrom(String name, Integer pincode) {
-        return userService.addUser(createRegisterRequestWith(name, pincode));
-    }
-    public  static RegisterRequest createRegisterRequestWith(String user, int pincode) {
+    public static RegisterRequest createRegisterRequestWith(String user, int pincode) {
         RegisterRequest registerRequest = new RegisterRequest();
         String userNameinLowerCase = user.replace(" ", "").toLowerCase().replaceAll("[^a-z0-9]", "");
         ;
@@ -99,6 +49,7 @@ public class AppInitializationService implements ApplicationListener<Application
         registerRequest.setEmail(userNameinLowerCase + "@upgrad.com");
         return registerRequest;
     }
+
     private static String getAPhoneNumber() {
         String phone = getRandomPhoneNumber();
         while (generatedPhones.contains(phone) == true) {
@@ -129,6 +80,7 @@ public class AppInitializationService implements ApplicationListener<Application
         else
             return gender;
     }
+
     static String getRandomDoorNumber() {
 
         int min = 1;
@@ -176,6 +128,7 @@ public class AppInitializationService implements ApplicationListener<Application
             return getRandomDoorNumber() + " - " + getRandomStreetName() + ",Goa";
 
     }
+
     static int getRandomPinCode() {
 
 
@@ -184,7 +137,6 @@ public class AppInitializationService implements ApplicationListener<Application
         return integers.get(rand.nextInt(integers.size()));
 
     }
-
 
     private static String getRandomPhoneNumber() {
 
@@ -216,6 +168,48 @@ public class AppInitializationService implements ApplicationListener<Application
 
 
         return getStringFromDate(LocalDate.now().minusYears(getRandomAge()));
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+
+
+        if (roleService.shouldInitialize()) {
+            log.info("loading default values");
+            initialize();
+
+            log.info("loaded default values");
+        }
+
+
+    }
+
+    public void initialize() {
+
+        roleService.saveRoleFor(UserRole.USER);
+        roleService.saveRoleFor(UserRole.TESTER);
+        roleService.saveRoleFor(UserRole.DOCTOR);
+        roleService.saveRoleFor(UserRole.GOVERNMENT_AUTHORITY);
+        addDefaultUserData();
+
+    }
+
+    public void addDefaultUserData() {
+
+        createUserFrom("user", getRandomPinCode());
+
+
+        defaultDoctor = userService.addDoctor(createRegisterRequestWith("doctor", getRandomPinCode()));
+
+
+        defaultTester = userService.addTester(createRegisterRequestWith("tester", getRandomPinCode()));
+
+        govtAuthority = userService.addGovernmentAuthority(createRegisterRequestWith("authority", getRandomPinCode()));
+
+    }
+
+    public User createUserFrom(String name, Integer pincode) {
+        return userService.addUser(createRegisterRequestWith(name, pincode));
     }
 
 }

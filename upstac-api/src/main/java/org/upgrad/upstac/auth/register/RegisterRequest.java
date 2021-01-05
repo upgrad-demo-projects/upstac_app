@@ -19,9 +19,9 @@ public class RegisterRequest {
     private String password;
     private String firstName;
 
-    private String email="";
+    private String email = "";
 
-    private String phoneNumber="";
+    private String phoneNumber = "";
 
 
     private String lastName;
@@ -35,7 +35,6 @@ public class RegisterRequest {
 
 
     private Gender gender;
-
 
 
 }

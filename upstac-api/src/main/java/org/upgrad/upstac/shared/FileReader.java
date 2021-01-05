@@ -21,7 +21,6 @@ public class FileReader {
         }
     }
 
-    
 
     public static String read(String fileName) throws IOException {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();

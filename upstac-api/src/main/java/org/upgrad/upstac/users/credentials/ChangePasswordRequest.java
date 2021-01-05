@@ -7,11 +7,11 @@ public class ChangePasswordRequest {
 
 
     @NotNull
-    @Size(min = 8,max = 255)
+    @Size(min = 8, max = 255)
     String password;
 
     @NotNull
-    @Size(min = 8,max = 255)
+    @Size(min = 8, max = 255)
     String oldPassword;
 
     public String getPassword() {

@@ -16,15 +16,12 @@ import static org.upgrad.upstac.exception.UpgradResponseStatusException.asBadReq
 public class RegisterController {
 
 
-
+    private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
     private RegisterService registerService;
 
 
-    private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
-
-
     @Autowired
-    public RegisterController( RegisterService userService) {
+    public RegisterController(RegisterService userService) {
 
         this.registerService = userService;
     }
@@ -36,7 +33,7 @@ public class RegisterController {
         try {
             return registerService.addUser(user);
         } catch (AppException e) {
-            throw   asBadRequest(e.getMessage());
+            throw asBadRequest(e.getMessage());
         }
 
 

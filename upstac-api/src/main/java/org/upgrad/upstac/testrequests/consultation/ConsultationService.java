@@ -16,25 +16,23 @@ import java.time.LocalDate;
 @Validated
 public class ConsultationService {
 
+    private static Logger logger = LoggerFactory.getLogger(ConsultationService.class);
     @Autowired
     private ConsultationRepository consultationRepository;
 
-    private static Logger logger = LoggerFactory.getLogger(ConsultationService.class);
-
-
     @Transactional
-    public Consultation assignForConsultation( TestRequest testRequest, User doctor) {
+    public Consultation assignForConsultation(TestRequest testRequest, User doctor) {
         Consultation consultation = new Consultation();
         consultation.setDoctor(doctor);
         consultation.setRequest(testRequest);
 
-        return    consultationRepository.save(consultation);
+        return consultationRepository.save(consultation);
 
 
     }
 
-    public Consultation updateConsultation(TestRequest testRequest , CreateConsultationRequest createConsultationRequest) {
-        Consultation consultation = consultationRepository.findByRequest(testRequest).orElseThrow(()-> new AppException("Invalid Request"));
+    public Consultation updateConsultation(TestRequest testRequest, CreateConsultationRequest createConsultationRequest) {
+        Consultation consultation = consultationRepository.findByRequest(testRequest).orElseThrow(() -> new AppException("Invalid Request"));
 
         consultation.setSuggestion(createConsultationRequest.getSuggestion());
         consultation.setComments(createConsultationRequest.getComments());

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.upgrad.upstac.users.models.Gender;
 import org.upgrad.upstac.users.models.AccountStatus;
+import org.upgrad.upstac.users.models.Gender;
 import org.upgrad.upstac.users.roles.Role;
 
 import javax.persistence.*;
@@ -97,9 +97,9 @@ public class User {
         return doesUserHasRole("TESTER");
     }
 
-    public Integer getAge(){
+    public Integer getAge() {
 
-        if(null != dateOfBirth)
+        if (null != dateOfBirth)
             return LocalDate.now().getYear() - dateOfBirth.getYear();
         else
             return 0;

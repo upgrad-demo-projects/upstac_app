@@ -17,7 +17,6 @@ import org.upgrad.upstac.users.roles.Role;
 import org.upgrad.upstac.users.roles.RoleService;
 import org.upgrad.upstac.users.roles.UserRole;
 
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -31,18 +30,13 @@ import static org.upgrad.upstac.shared.StringValidator.isNotEmptyOrNull;
 @Validated
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     @Autowired
     RoleService roleService;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
-
-
 
     @Cacheable("user")
     public User findByUserName(String userName) {
@@ -65,13 +59,13 @@ public class UserService {
 
     public void validateUserWithSameDataExists(RegisterRequest user) {
 
-        if((null != findByUserName(user.getUserName())))
+        if ((null != findByUserName(user.getUserName())))
             throw new AppException("Username already exists " + user.getUserName());
 
-        userRepository.findByEmail(user.getEmail()).ifPresent(user1 ->  {
+        userRepository.findByEmail(user.getEmail()).ifPresent(user1 -> {
             throw new AppException("User with Same email already exists " + user.getEmail());
         });
-        userRepository.findByPhoneNumber(user.getPhoneNumber()).ifPresent(user1 ->  {
+        userRepository.findByPhoneNumber(user.getPhoneNumber()).ifPresent(user1 -> {
             throw new AppException("User with Same Phone number already exists " + user.getPhoneNumber());
         });
 
@@ -83,9 +77,6 @@ public class UserService {
         userRepository.findAll().iterator().forEachRemaining(list::add);
         return list;
     }
-
-
-
 
 
     public Optional<User> findById(Long id) {
@@ -103,6 +94,7 @@ public class UserService {
 
         return addUserWithRole(user, roleService.getForDoctor(), AccountStatus.INITIATED);
     }
+
     public User addGovernmentAuthority(RegisterRequest user) {
 
         return addUserWithRole(user, roleService.getForGovernmentAuthority(), AccountStatus.APPROVED);
@@ -144,7 +136,7 @@ public class UserService {
     }
 
     @CachePut(value = "user")
-    public User updateApprovalStatus(Long userId,AccountStatus status) {
+    public User updateApprovalStatus(Long userId, AccountStatus status) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException("Invalid User ID"));
 
         return updateStatusAndSave(user, status);
@@ -158,10 +150,9 @@ public class UserService {
 
     @CachePut(value = "user")
     public User saveInDatabase(User newUser) {
-        try{
+        try {
             return userRepository.save(newUser);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
 
             e.printStackTrace();
             throw new AppException("User with same data Already exists, Email/Phone should be unique");
@@ -173,17 +164,16 @@ public class UserService {
     public User updateUserDetails(User user, UpdateUserDetailRequest updateUserDetailRequest) {
 
 
-
-        if(isNotEmptyOrNull(updateUserDetailRequest.getFirstName()))
+        if (isNotEmptyOrNull(updateUserDetailRequest.getFirstName()))
             user.setFirstName(updateUserDetailRequest.getFirstName());
 
-        if(isNotEmptyOrNull(updateUserDetailRequest.getLastName()))
+        if (isNotEmptyOrNull(updateUserDetailRequest.getLastName()))
             user.setLastName(updateUserDetailRequest.getLastName());
 
-        if(isNotEmptyOrNull(updateUserDetailRequest.getEmail()))
+        if (isNotEmptyOrNull(updateUserDetailRequest.getEmail()))
             user.setEmail(updateUserDetailRequest.getEmail());
 
-        if(isNotEmptyOrNull(updateUserDetailRequest.getPhoneNumber()))
+        if (isNotEmptyOrNull(updateUserDetailRequest.getPhoneNumber()))
             user.setPhoneNumber(updateUserDetailRequest.getPhoneNumber());
 
 

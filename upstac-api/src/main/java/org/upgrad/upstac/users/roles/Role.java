@@ -8,9 +8,9 @@ import javax.persistence.*;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    private  Long id;
+    private Long id;
 
     @Column(unique = true)
     private String name;
@@ -20,12 +20,11 @@ public class Role {
     private String description;
 
 
-
-    public  Long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId( Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

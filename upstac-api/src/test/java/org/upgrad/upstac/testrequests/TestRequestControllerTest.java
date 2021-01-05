@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class TestRequestControllerTest {
@@ -33,36 +32,36 @@ class TestRequestControllerTest {
     UserLoggedInService userLoggedInService;
 
     @Test
-    public void when_testRequestCreateService_createTestRequestFrom_returns_valid_expect_same_as_response(){
+    public void when_testRequestCreateService_createTestRequestFrom_returns_valid_expect_same_as_response() {
 
         //Arrange
-        User user= createUser();
+        User user = createUser();
         CreateTestRequest createTestRequest = createTestRequest();
         TestRequest mockedResponse = getMockedResponseFrom(createTestRequest);
         Mockito.when(userLoggedInService.getLoggedInUser()).thenReturn(user);
-        Mockito.when(testRequestService.createTestRequestFrom(user,createTestRequest)).thenReturn(mockedResponse);
+        Mockito.when(testRequestService.createTestRequestFrom(user, createTestRequest)).thenReturn(mockedResponse);
 
         //Act
         TestRequest result = testRequestController.createRequest(createTestRequest);
 
         //Assert
         assertNotNull(result);
-        assertEquals(result,mockedResponse);
+        assertEquals(result, mockedResponse);
 
     }
 
     @Test
-    public void when_testRequestCreateService_createTestRequestFrom_throws_appException_expect_response_status_exception_to_be_thrown(){
+    public void when_testRequestCreateService_createTestRequestFrom_throws_appException_expect_response_status_exception_to_be_thrown() {
 
         //Arrange
-        User user= createUser();
+        User user = createUser();
         CreateTestRequest createTestRequest = createTestRequest();
 
         Mockito.when(userLoggedInService.getLoggedInUser()).thenReturn(user);
-        Mockito.when(testRequestService.createTestRequestFrom(user,createTestRequest)).thenThrow(new AppException("Invalid data"));
+        Mockito.when(testRequestService.createTestRequestFrom(user, createTestRequest)).thenThrow(new AppException("Invalid data"));
 
         //Act
-        ResponseStatusException result = assertThrows(ResponseStatusException.class,()->{
+        ResponseStatusException result = assertThrows(ResponseStatusException.class, () -> {
 
             testRequestController.createRequest(createTestRequest);
         });
@@ -71,7 +70,7 @@ class TestRequestControllerTest {
         //Assert
         assertNotNull(result);
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatus());
-        assertEquals("Invalid data",result.getReason());
+        assertEquals("Invalid data", result.getReason());
 
     }
 
@@ -86,6 +85,7 @@ class TestRequestControllerTest {
         createTestRequest.setPinCode(716768);
         return createTestRequest;
     }
+
     public TestRequest getMockedResponseFrom(CreateTestRequest createTestRequest) {
         TestRequest testRequest = new TestRequest();
 

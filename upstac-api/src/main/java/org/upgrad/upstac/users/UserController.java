@@ -25,20 +25,15 @@ import static org.upgrad.upstac.exception.UpgradResponseStatusException.asForbid
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     @Autowired
     UserLoggedInService userLoggedInService;
 
 
     @Autowired
     ChangePasswordService changePasswordService;
-
-
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
+    @Autowired
+    private UserService userService;
 
     @PreAuthorize("hasRole('GOVERNMENT_AUTHORITY')")
     @GetMapping
@@ -70,7 +65,7 @@ public class UserController {
 
         } catch (ConstraintViolationException e) {
             throw asConstraintViolation(e);
-        }catch (ForbiddenException e) {
+        } catch (ForbiddenException e) {
             throw asForbidden(e.getMessage());
         }
 
@@ -111,7 +106,7 @@ public class UserController {
     public User updateUserDetails(@RequestBody UpdateUserDetailRequest updateUserDetailRequest) {
         try {
             User user = userLoggedInService.getLoggedInUser();
-            return userService.updateUserDetails(user,updateUserDetailRequest);
+            return userService.updateUserDetails(user, updateUserDetailRequest);
         } catch (ConstraintViolationException e) {
             throw asConstraintViolation(e);
         }

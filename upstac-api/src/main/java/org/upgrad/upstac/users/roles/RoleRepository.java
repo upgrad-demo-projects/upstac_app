@@ -8,8 +8,8 @@ import java.util.List;
 @Repository
 public interface RoleRepository extends CrudRepository<Role, Long> {
     Role findByName(String name);
-    List<Role> findAll();
 
+    List<Role> findAll();
 
 
 }

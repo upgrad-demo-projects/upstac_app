@@ -10,9 +10,10 @@ public class LoginResponse {
     private String message;
     private String token;
 
-    public LoginResponse(){
+    public LoginResponse() {
 
     }
+
     public LoginResponse(String userName, String message, String token) {
         super();
         this.userName = userName;

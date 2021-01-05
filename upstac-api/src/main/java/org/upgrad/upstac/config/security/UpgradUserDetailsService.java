@@ -19,34 +19,31 @@ import java.util.stream.Collectors;
 public class UpgradUserDetailsService implements UserDetailsService {
 
 
-	private UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(UpgradUserDetailsService.class);
+    private UserService userService;
 
+    @Autowired
+    public UpgradUserDetailsService(UserService userService) {
+        this.userService = userService;
+    }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByUserName(username);
+        log.info("loadUserByUsername " + user.toString());
+        if (user == null) {
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), getAuthority(user));
+    }
 
-	private static final Logger log = LoggerFactory.getLogger(UpgradUserDetailsService.class);
+    private Set<SimpleGrantedAuthority> getAuthority(User user) {
 
-	@Autowired
-	public UpgradUserDetailsService(UserService userService) {
-		this.userService = userService;
-	}
+        return user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .collect(Collectors.toSet());
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userService.findByUserName(username);
-		log.info("loadUserByUsername " + user.toString());
-		if(user == null){
-			throw new UsernameNotFoundException("Invalid username or password.");
-		}
-		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), getAuthority(user));
-	}
-
-	private Set<SimpleGrantedAuthority> getAuthority(User user) {
-
-		return user.getRoles()
-				.stream()
-				.map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
-				.collect(Collectors.toSet());
-
-	}
+    }
 
 }

@@ -14,9 +14,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,11 +38,10 @@ class TestRequestCreateServiceTest {
         TestRequest mockedResponse = getMockedTestRequest();
 
 
-
         //Parameters
         //CreateTestRequest
         //User
-        User user= createUser();
+        User user = createUser();
         CreateTestRequest createTestRequest = createTestRequest();
 
 
@@ -50,7 +50,7 @@ class TestRequestCreateServiceTest {
         //returns  List<TestRequest>
 
         List<TestRequest> existingTestRequests = new ArrayList<>();
-        Mockito.when(testRequestRepository.findByEmailOrPhoneNumber(createTestRequest.getEmail(),createTestRequest.getPhoneNumber())).thenReturn(existingTestRequests);
+        Mockito.when(testRequestRepository.findByEmailOrPhoneNumber(createTestRequest.getEmail(), createTestRequest.getPhoneNumber())).thenReturn(existingTestRequests);
 
         //testRequestRepository.save
         //return TestRequest
@@ -60,10 +60,7 @@ class TestRequestCreateServiceTest {
         // Call createTestRequestFrom
 
 
-
-
-            testRequestService.createTestRequestFrom(user,createTestRequest);
-
+        testRequestService.createTestRequestFrom(user, createTestRequest);
 
 
         //Assert
@@ -81,20 +78,19 @@ class TestRequestCreateServiceTest {
         TestRequest mockedResponse = getMockedTestRequest();
 
 
-
         //Parameters
         //CreateTestRequest
         //User
-        User user= createUser();
+        User user = createUser();
         CreateTestRequest createTestRequest = createTestRequest();
 
 
         //Mock
         //testRequestRepository.findByEmailOrPhoneNumber
-            //returns  List<TestRequest>
+        //returns  List<TestRequest>
 
         List<TestRequest> existingTestRequests = getExistingTestRequests();
-        Mockito.when(testRequestRepository.findByEmailOrPhoneNumber(createTestRequest.getEmail(),createTestRequest.getPhoneNumber())).thenReturn(existingTestRequests);
+        Mockito.when(testRequestRepository.findByEmailOrPhoneNumber(createTestRequest.getEmail(), createTestRequest.getPhoneNumber())).thenReturn(existingTestRequests);
         //testRequestRepository.save
         //return TestRequest
 
@@ -103,17 +99,16 @@ class TestRequestCreateServiceTest {
         // Call createTestRequestFrom
 
 
+        AppException result = assertThrows(AppException.class, () -> {
 
-        AppException result = assertThrows(AppException.class,()->{
-
-            testRequestService.createTestRequestFrom(user,createTestRequest);
+            testRequestService.createTestRequestFrom(user, createTestRequest);
         });
 
 
         //Assert
 
         assertNotNull(result);
-        assertThat(result.getMessage(),containsString("A Request with same PhoneNumber or Email is already in progress"));
+        assertThat(result.getMessage(), containsString("A Request with same PhoneNumber or Email is already in progress"));
 
     }
 
@@ -129,7 +124,7 @@ class TestRequestCreateServiceTest {
         return createTestRequest;
     }
 
-     List<TestRequest> getExistingTestRequests() {
+    List<TestRequest> getExistingTestRequests() {
         List<TestRequest> testRequests = new ArrayList<>();
 
         testRequests.add(getMockedTestRequest());
@@ -138,7 +133,7 @@ class TestRequestCreateServiceTest {
 
 
     public TestRequest getMockedTestRequest() {
-        CreateTestRequest createTestRequest =createTestRequest();
+        CreateTestRequest createTestRequest = createTestRequest();
         TestRequest testRequest = new TestRequest();
 
         testRequest.setName(createTestRequest.getName());
