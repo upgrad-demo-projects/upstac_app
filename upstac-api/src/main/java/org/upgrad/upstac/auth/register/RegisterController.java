@@ -15,52 +15,42 @@ import static org.upgrad.upstac.exception.UpgradResponseStatusException.asBadReq
 @RestController
 public class RegisterController {
 
+  private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
+  private RegisterService registerService;
 
+  @Autowired
+  public RegisterController(RegisterService userService) {
 
-    private RegisterService registerService;
+    this.registerService = userService;
+  }
 
+  @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
+  public User saveUser(@RequestBody RegisterRequest user) {
 
-    private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
-
-
-    @Autowired
-    public RegisterController( RegisterService userService) {
-
-        this.registerService = userService;
+    try {
+      return registerService.addUser(user);
+    } catch (AppException e) {
+      throw asBadRequest(e.getMessage());
     }
+  }
 
+  @RequestMapping(value = "/auth/doctor/register", method = RequestMethod.POST)
+  public User saveDoctor(@RequestBody RegisterRequest user) {
 
-    @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
-    public User saveUser(@RequestBody RegisterRequest user) {
-
-        try {
-            return registerService.addUser(user);
-        } catch (AppException e) {
-            throw   asBadRequest(e.getMessage());
-        }
-
-
+    try {
+      return registerService.addDoctor(user);
+    } catch (AppException e) {
+      throw asBadRequest(e.getMessage());
     }
+  }
 
+  @RequestMapping(value = "/auth/tester/register", method = RequestMethod.POST)
+  public User saveTester(@RequestBody RegisterRequest user) {
 
-    @RequestMapping(value = "/auth/doctor/register", method = RequestMethod.POST)
-    public User saveDoctor(@RequestBody RegisterRequest user) {
-
-        try {
-            return registerService.addDoctor(user);
-        } catch (AppException e) {
-            throw asBadRequest(e.getMessage());
-        }
+    try {
+      return registerService.addTester(user);
+    } catch (AppException e) {
+      throw asBadRequest(e.getMessage());
     }
-
-
-    @RequestMapping(value = "/auth/tester/register", method = RequestMethod.POST)
-    public User saveTester(@RequestBody RegisterRequest user) {
-
-        try {
-            return registerService.addTester(user);
-        } catch (AppException e) {
-            throw asBadRequest(e.getMessage());
-        }
-    }
+  }
 }

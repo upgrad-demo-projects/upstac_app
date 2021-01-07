@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.upgrad.upstac.users.models.Gender;
 import org.upgrad.upstac.users.models.AccountStatus;
+import org.upgrad.upstac.users.models.Gender;
 import org.upgrad.upstac.users.roles.Role;
 
 import javax.persistence.*;
@@ -19,90 +19,81 @@ import java.util.Set;
 @ToString
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(unique = true)
-    private String userName;
+  @Column(unique = true)
+  private String userName;
 
-    @Column
-    @JsonIgnore
-    @ToString.Exclude
-    private String password;
+  @Column @JsonIgnore @ToString.Exclude private String password;
 
-    private LocalDateTime created;
+  private LocalDateTime created;
 
-    private LocalDate dateOfBirth;
+  private LocalDate dateOfBirth;
 
+  private LocalDateTime updated;
 
-    private LocalDateTime updated;
+  private String firstName;
 
-    private String firstName;
+  private AccountStatus status;
 
-    private AccountStatus status;
+  @Column(unique = true)
+  private String email;
 
-    @Column(unique = true)
-    private String email;
+  private String lastName;
 
+  private Gender gender;
 
-    private String lastName;
+  @Column(unique = true)
+  private String phoneNumber;
 
+  private String address;
 
-    private Gender gender;
+  private Integer pinCode;
 
-    @Column(unique = true)
-    private String phoneNumber;
-    private String address;
+  // CascadeType.PERSIST has issues with many to many which makes us not use CascadeType.ALL
+  // So Using  other Cascades other than CascadeType.PERSIST
+  //    @ManyToMany(fetch = FetchType.EAGER, cascade =
+  // {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
+  //    @JoinTable(name = "USER_ROLES", joinColumns = {
+  //            @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {
+  //            @JoinColumn(name = "ROLE_ID") })
+  //    private Set<Role> roles;
 
-    private Integer pinCode;
+  @ManyToMany(fetch = FetchType.EAGER)
+  private Set<Role> roles;
 
-    //CascadeType.PERSIST has issues with many to many which makes us not use CascadeType.ALL
-    //So Using  other Cascades other than CascadeType.PERSIST
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
-//    @JoinTable(name = "USER_ROLES", joinColumns = {
-//            @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {
-//            @JoinColumn(name = "ROLE_ID") })
-//    private Set<Role> roles;
+  public boolean doesRoleIsDoctor() {
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    return doesUserHasRole("DOCTOR");
+  }
 
+  public boolean doesUserHasRole(String s) {
+    return roles.stream()
+        .filter(
+            role -> {
+              return role.getName().equalsIgnoreCase(s);
+            })
+        .findFirst()
+        .isPresent();
+  }
 
-    public boolean doesRoleIsDoctor() {
+  public boolean doesRoleIsUser() {
+    return doesUserHasRole("USER");
+  }
 
-        return doesUserHasRole("DOCTOR");
+  public boolean doesRoleIsAuthority() {
+    return doesUserHasRole("GOVERNMENT_AUTHORITY");
+  }
 
+  public boolean doesRoleIsTester() {
+    return doesUserHasRole("TESTER");
+  }
 
-    }
+  public Integer getAge() {
 
-    public boolean doesUserHasRole(String s) {
-        return roles.stream()
-                .filter(role -> {
-                    return role.getName().equalsIgnoreCase(s);
-                })
-                .findFirst()
-                .isPresent();
-    }
-
-    public boolean doesRoleIsUser() {
-        return doesUserHasRole("USER");
-    }
-
-    public boolean doesRoleIsAuthority() {
-        return doesUserHasRole("GOVERNMENT_AUTHORITY");
-    }
-
-    public boolean doesRoleIsTester() {
-        return doesUserHasRole("TESTER");
-    }
-
-    public Integer getAge(){
-
-        if(null != dateOfBirth)
-            return LocalDate.now().getYear() - dateOfBirth.getYear();
-        else
-            return 0;
-    }
-
+    if (null != dateOfBirth) return LocalDate.now().getYear() - dateOfBirth.getYear();
+    else return 0;
+  }
 }

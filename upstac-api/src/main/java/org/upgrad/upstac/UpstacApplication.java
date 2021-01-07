@@ -6,9 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class UpstacApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(UpstacApplication.class, args);
-	}
-
-
+  public static void main(String[] args) {
+    SpringApplication.run(UpstacApplication.class, args);
+  }
 }

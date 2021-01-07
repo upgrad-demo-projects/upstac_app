@@ -22,84 +22,74 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider implements Serializable {
 
+  public static final long JWT_TOKEN_VALIDITY = 12 * 60 * 60;
+  static final String AUTHORITIES_KEY = "scopes";
+  private static final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
-    public static final  long JWT_TOKEN_VALIDITY = 12 * 60 * 60;
+  @Value("${token.secret}")
+  private String secretKey;
 
-    @Value("${token.secret}" )
-    private String secretKey;
+  public String getUsernameFromToken(String token) {
+    return getClaimFromToken(token, Claims::getSubject);
+  }
 
+  public Date getExpirationDateFromToken(String token) {
+    return getClaimFromToken(token, Claims::getExpiration);
+  }
 
-    static final String AUTHORITIES_KEY = "scopes";
+  public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    final Claims claims = getAllClaimsFromToken(token);
+    return claimsResolver.apply(claims);
+  }
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
-    }
+  private Claims getAllClaimsFromToken(String token) {
+    return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+  }
 
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
+  private Boolean isTokenExpired(String token) {
+    final Date expiration = getExpirationDateFromToken(token);
+    return expiration.before(new Date());
+  }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
+  public String generateToken(Authentication authentication) {
+    final String authorities =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.joining(","));
 
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
-    }
+    log.info("authorities", authorities);
+    return Jwts.builder()
+        .setSubject(authentication.getName())
+        .claim(AUTHORITIES_KEY, authorities)
+        .signWith(SignatureAlgorithm.HS256, secretKey)
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+        .compact();
+  }
 
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
+  public void validateToken(String token, UserDetails userDetails) throws ServletException {
+    final String username = getUsernameFromToken(token);
+    if (username.equals(userDetails.getUsername()) == false)
+      throw new ServletException("Invalid User Name");
 
-    public String generateToken(Authentication authentication) {
-        final String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    if (!isTokenExpired(token) == false) throw new ServletException("Token Expired");
+  }
 
-        log.info("authorities",authorities);
-        return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000))
-                .compact();
-    }
+  UsernamePasswordAuthenticationToken getAuthentication(
+      final String token, final Authentication existingAuth, final UserDetails userDetails) {
 
-    public void validateToken(String token, UserDetails userDetails) throws ServletException {
-        final String username = getUsernameFromToken(token);
-        if (username.equals(userDetails.getUsername()) == false)
-            throw new ServletException("Invalid User Name");
+    final JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
 
-        if (!isTokenExpired(token) == false)
-            throw new ServletException("Token Expired");
+    final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
 
-    }
+    final Claims claims = claimsJws.getBody();
 
-    UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth, final UserDetails userDetails) {
+    log.info("claims" + claims.get(AUTHORITIES_KEY).toString());
+    final Collection<? extends GrantedAuthority> authorities =
+        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
 
-        final JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
-
-        final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
-
-        final Claims claims = claimsJws.getBody();
-
-
-
-        log.info("claims" + claims.get(AUTHORITIES_KEY).toString());
-        final Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
-    }
-
-    private static final Logger log = LoggerFactory.getLogger(TokenProvider.class);
-
+    return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+  }
 }
