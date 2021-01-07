@@ -81,4 +81,13 @@ public class TestRequestQueryService {
   public List<TestRequest> findByUser(User user) {
     return testRequestRepository.findByCreatedBy(user);
   }
+
+  public TestRequest createTestRequest(TestRequest testRequest) {
+    return testRequestRepository.save(testRequest);
+  }
+
+  public TestRequest deleteTestRequest(TestRequest testRequest) {
+    testRequestRepository.delete(testRequest);
+    return testRequest;
+  }
 }
